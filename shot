@@ -1,6 +1,6 @@
 #!/bin/sh
 # take a screenshot and append date to filename
-# depends:	ImageMagick
+# depends: ImageMagick (import)
 
 FILE="${1%%.*}"
 EXT="${1##${FILE}}"

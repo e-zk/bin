@@ -1,7 +1,7 @@
 #!/bin/sh
 # screen recorder
-# depends:	ffmpeg
-# usage:	rec <filename>
+# depends: ffmpeg
+# usage: rec <filename>
 
 OUTPUT=$1
 
