@@ -1,0 +1,16 @@
+#!/bin/sh
+#set -ex
+
+test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
+
+W=${W:-$width}
+H=${H:-$height}
+X=${X:-$xpos}
+Y=${Y:-$ypos}
+BW=${BW:-$borderw}
+
+BG=${BG:-$background}
+FG=${FG:-$foreground}
+BC=${BC:-$border}
+
+lemonbar -d $bottom -g ${W}x${H}+${X}+${Y} -f "$font" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh
