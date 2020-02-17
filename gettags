@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# print the metadata of a given media file
+# depends: mutagen
+
+import argparse
+import mutagen
+
+parser = argparse.ArgumentParser(description="tag some files.", add_help=True)
+parser.add_argument("files", metavar="file", type=str, nargs="+",
+                    help="media files to tag")
+parser.add_argument("-t", "--tag", dest="tag", type=str, help="tag to print", default=None)
+
+args = parser.parse_args()
+
+for f in args.files:
+    tfile = mutagen.File(f)
+    if args.tag != None: 
+        try:
+            print(f + ": " + args.tag + ", " + tfile[args.tag][0])
+        except KeyError:
+            print("invalid tag. valid tags are: ")
+            for key in tfile.keys():
+                print("'" + key + "'", end=", ")
+            print("")
+    else: 
+        print(tfile.pprint())

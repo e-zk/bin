@@ -1,0 +1,16 @@
+#!/bin/sh
+# send .pdf or .ps file to printer
+
+PRINTER=${PRINTER:-"192.168.0.69"}
+PORT=9100
+FILE="$1"
+
+
+case "$FILE" in
+	*.pdf)
+		pdf2ps "$FILE" - | nc ${PRINTER} ${PORT}
+		;;
+	*.ps)
+		cat "$FILE" | nc ${PRINTER} ${PORT}
+		;;
+esac

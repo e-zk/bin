@@ -1,0 +1,20 @@
+#!/bin/sh
+# power menu
+# depends: xmenu, xlock
+
+case $(xmenu poweroff reboot sleep hibernate) in
+	poweroff)
+		(echo "%{c}POWEROFF NOW"; sleep 5) | FG=\#ff0000 bar
+		doas shutdown -p now
+		;;
+	reboot)
+		(echo "%{c}REBOOT NOW"; sleep 5) | FG=\#ff0000 bar
+		doas reboot
+		;;
+	sleep)
+		xlock & doas zzz
+		;;
+	hibernate)
+		xlock & doas ZZZ
+		;;
+esac
