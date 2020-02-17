@@ -1,0 +1,11 @@
+#!/bin/sh
+# take a screenshot and append date to filename
+# depends:	ImageMagick
+
+FILE="${1%%.*}"
+EXT="${1##${FILE}}"
+DATE="$(date '+%b.%d-%H%M')"
+
+# wait for a sec
+sleep 1
+import -window root "${FILE}-${DATE}${EXT}"

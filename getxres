@@ -1,0 +1,6 @@
+#!/bin/sh
+# get an Xresource value (probably not the best solution)
+
+RES="$1"
+
+xrdb -query | grep "${RES}" | cut -d '#' -f 2

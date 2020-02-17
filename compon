@@ -1,0 +1,12 @@
+#!/bin/sh
+# starts compton if it is not running;
+# kills compton if it is running
+
+if pgrep compton; then
+	echo "killing compton..."
+	kill -9 $(pgrep compton)
+else
+	echo "starting compton..."
+
+	compton --config $HOME/etc/compton.conf &
+fi

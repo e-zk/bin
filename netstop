@@ -1,0 +1,12 @@
+#!/bin/sh
+# stop network
+# usage: doas sh bin/netstop <interface?
+
+if [ -n "$1" ]; then
+	ifconfig $1 down
+else
+	ifconfig iwm0 down
+	ifconfig em0 down
+fi
+
+pkill -KILL dhclient

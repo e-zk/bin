@@ -1,0 +1,48 @@
+#!/bin/sh
+# tmpfox - generate a temporary firefox profile
+
+# trap anything; clean up
+trap cleanup 1 2 3 6
+
+# setup profiledir
+PROFILE_DIR=`mktemp -d -p /tmp 'firefox.XXXXXX'`
+
+# user agent string
+USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0"
+
+# remove the profile dir
+cleanup() {
+	rm -rvf "$PROFILE_DIR"
+}
+
+
+# write user.js settings
+cat <<EOF > "${PROFILE_DIR}/user.js"
+// user.js //
+// change useragent to something inconspicious (windows)
+user_pref("general.useragent.override", "${USER_AGENT}");
+// disable pocket
+user_pref("browser.newtabpage.activity-stream.section.highlights.includePocket", false);
+
+// disable first startup pages 
+user_pref("startup.homepage_welcome_url", "");
+user_pref("privacy.trackingprotection.introURL", "");
+
+// disable newtab
+user_pref("browser.disableResetPrompt", true);
+user_pref("browser.newtabpage.enhanced", false);
+user_pref("browser.newtabpage.introShown", false);
+user_pref("browser.startup.firstrunSkipsHomepage", true);
+user_pref("browser.startup.blankWindow", true);
+user_pref("browser.selfsupport.url", "");
+user_pref("browser.shell.checkDefaultBrowser", false);
+
+// disable javascript by default
+user_pref("javascript.enabled",false);
+EOF
+
+# start a new firefox instance w/ the temporary profile directory
+firefox-esr --profile "$PROFILE_DIR" --no-remote --new-instance
+
+# remove the profile directory
+cleanup

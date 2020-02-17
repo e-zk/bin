@@ -1,0 +1,10 @@
+#!/bin/sh
+# youtube-dl wrapper
+
+if [ "$(basename $0)" == "vdl" ]; then
+	# download video
+	youtube-dl --output '%(title)s.%(ext)s' ${@}
+else
+	# download audio-only
+	youtube-dl -x --audio-format best --audio-quality 0 --embed-thumbnail --add-metadata --output '%(title)s.%(ext)s' ${@}
+fi

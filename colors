@@ -1,0 +1,56 @@
+#!/bin/sh
+# print colors
+
+def_char="■■"
+
+horiz() {
+	for i in 0 1 2 3 4 5 6 7; do
+		printf "%s" "$(tput setaf $i)$char$(tput sgr0)"
+	done
+	printf "\n"
+
+	for i in 0 1 2 3 4 5 6 7; do
+		printf "%s" "$(tput bold)$(tput setaf $i)$char$(tput sgr0)"
+	done
+	printf "\n"
+}
+
+vert() {
+	for i in 0 1 2 3 4 5 6 7; do
+		printf "%s" "$(tput setaf $i)$char $(tput sgr0)"
+		printf "%s" "$(tput bold)$(tput setaf $i)$char$(tput sgr0)"
+		printf "\n"
+	done
+}
+
+short() {
+	for i in 0 1 2 3 4 5 6 7; do
+		tput setaf $i
+		printf "%s" "$char"
+		tput sgr0
+	done
+	printf "\n"
+}
+
+printf "\n"
+
+case $1 in
+	"-v")
+		char="${2:-$def_char}"
+		vert
+		;;
+	"-h")
+		char="${2:-$def_char}"
+		horiz
+		;;
+	"-s")
+		char="${2:-$def_char}"
+		short
+		;;
+	*)
+		char="${1:-$def_char}"
+		short
+		;;
+esac
+
+printf "\n"

@@ -1,0 +1,4 @@
+#!/bin/sh
+# usage: xeph :<DISPLAY>
+
+Xephyr -ac -br -noreset -screen 1280x720 "$1"
