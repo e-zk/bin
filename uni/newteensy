@@ -1,0 +1,86 @@
+#!/bin/sh
+# new202 - creates a new project for use in CAB202
+
+# usage: 
+# newteensy <proj_name>
+
+# uncomment for debug/verbose
+#set -ex
+
+if [ `id -u` == 0 ]; then
+	echo "WARNING: DO NOT RUN AS ROOT."
+	exit 1
+fi
+
+if [ -z "$1" ]; then
+	echo "invalid filename."
+	exit 1
+fi
+
+PROJ_NAME="$1"
+PROJ_SRC="${PROJ_NAME}/${PROJ_NAME}.c"
+PROJ_MAKE="${PROJ_NAME}/Makefile"
+
+# create the project directory
+mkdir -p $PROJ_NAME
+
+# create the main project source file
+touch "$PROJ_SRC"
+touch "$PROJ_MAKE"
+
+# write to the Makefile
+cat <<EOF > "$PROJ_MAKE"
+.POSIX:
+.SUFFIXES:
+
+# targets
+TARGETS = ${PROJ_NAME}.hex
+
+# path to cab202_teensy
+CAB202_TEENSY = ../../cab202_teensy
+
+# compiler + objcopy commands
+CC = avr-gcc
+OBJCOPY = avr-objcopy
+LOADER = teensyloader
+
+all: \$(TARGETS)
+
+# library includes
+LIBS = -lcab202_teensy -lprintf_flt -lm
+# include paths
+DIRS = -I\$(CAB202_TEENSY) -L\$(CAB202_TEENSY)
+# compiler flags
+CFLAGS = \\
+	-std=gnu99 \\
+	-mmcu=atmega32u4 \\
+	-DF_CPU=8000000UL \\
+	-funsigned-char \\
+	-funsigned-bitfields \\
+	-ffunction-sections \\
+	-fpack-struct \\
+	-fshort-enums \\
+	-Wall \\
+	-Werror \\
+	-Wl,-u,vfprintf \\
+	-Os 
+
+clean:
+	for f in \$(TARGETS); do \\
+		if [ -f \$\$f ]; then rm \$\$f; fi; \\
+		if [ -f \$\$f.elf ]; then rm \$\$f.elf; fi; \\
+		if [ -f \$\$f.obj ]; then rm \$\$f.obj; fi; \\
+	done
+
+rebuild: clean all
+
+${PROJ_NAME}.hex : $(basename ${PROJ_SRC})
+	\$(CC) $(basename ${PROJ_SRC}) \$(CFLAGS) \$(DIRS) \$(LIBS) -o \$@.obj
+	\$(OBJCOPY) -O ihex \$@.obj \$@
+
+upload: all
+	doas \$(LOADER) --mcu=atmega32u4 -v -w ${PROJ_NAME}.hex
+
+EOF
+
+cd "${PROJ_NAME}"

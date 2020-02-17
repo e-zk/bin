@@ -1,0 +1,55 @@
+#!/bin/sh
+# new202 - creates a new project for use in CAB202
+
+# usage: 
+# new202 <proj_name> [-zdk]
+
+# uncomment for debug/verbose
+#set -ex
+
+PROJ_NAME="$1"
+PROJ_SRC="${PROJ_NAME}/${PROJ_NAME}.c"
+PROJ_MAKE="${PROJ_NAME}/Makefile"
+
+CFLAGS="-g -Wall -Werror -std=gnu99 -lm"
+if [ "$2" == "-zdk" ]; then
+	CFLAGS="$CFLAGS -I../../ZDK/ -L../../ZDK -lzdk -lncurses"
+fi
+
+# create the project directory
+mkdir -p $PROJ_NAME
+
+# create the main project source file
+touch "$PROJ_SRC"
+touch "$PROJ_MAKE"
+
+# uncomment for default "hello world" program
+#cat <<EOF > "$PROJ_SRC"
+##include <stdio.h>
+#
+#int main() 
+#{
+#	printf("hello, world\\n");
+#	return 0;
+#}
+#EOF
+
+# write to the Makefile
+cat <<EOF > "$PROJ_MAKE"
+.POSIX:
+.SUFFIXES:
+
+CC = gcc
+CFLAGS = ${CFLAGS}
+
+default: ${PROJ_NAME}.c
+	\$(CC) \$(CFLAGS) -o ${PROJ_NAME} ${PROJ_NAME}.c
+
+clean:
+	-rm -i ${PROJ_NAME}
+	-rm -i *.core
+
+run: default
+	./${PROJ_NAME}
+
+EOF
