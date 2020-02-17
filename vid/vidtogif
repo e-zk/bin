@@ -1,0 +1,62 @@
+#!/bin/sh
+# convert a video to a .gif
+#set -ex
+
+SCALE=320
+#PALETTE=`mktemp palette.png.XXXXXX`
+PALETTE=tmp.palette.png
+
+usage() {
+        cat <<EOF
+convert video clip to gif
+usage: $(basename $0) <-i input_file> <-f fps> [-S scale] <-o output_file>
+EOF
+exit 1
+}
+
+check_opts() {
+        local FAIL=0 ERR="Error:"
+        
+        test -z "$INPUT" && ERR="${ERR}\nNo input file specified" && FAIL=1
+        test -z "$FPS" && ERR="${ERR}\nNo FPS specified" && FAIL=1
+        test -z "$SCALE" && ERR="${ERR}\nNo scale specified" && FAIL=1
+        test -z "$OUTPUT" && ERR="${ERR}\nNo output file specified" && FAIL=1
+        test $FAIL -eq 1 \
+		&& echo -e "${ERR}" && usage
+	
+}
+
+while getopts hi:s:d:f:S:o: opt; do
+        case $opt in
+                i)	INPUT=$OPTARG ;;
+                f)	FPS=$OPTARG ;;
+                S)	SCALE=$OPTARG ;;
+                o)	OUTPUT=$OPTARG ;;
+		h)	usage ;;
+                *)	usage ;;
+        esac
+done
+
+# check required options
+check_opts
+
+# generate the palette
+ffmpeg -y -i "$INPUT" -vf fps=${FPS},scale=${SCALE}:-1:flags=lanczos,palettegen "$PALETTE"
+
+# convert the video, using the palette
+ffmpeg -i "$INPUT" -i "$PALETTE" -filter_complex "fps=${FPS},scale=${SCALE}:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=2" "$OUTPUT"
+
+cat <<EOF
+
+INPUT   $INPUT
+===================
+PALETTE	$PALETTEE
+
+FPS     $FPS
+SCALE   $SCALE
+===================
+OUTPUT  $OUTPUT
+
+EOF
+
+rm -i $PALETTE

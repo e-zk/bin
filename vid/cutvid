@@ -1,0 +1,21 @@
+#!/bin/sh
+# cuts video at specific time frame for specific duration (copy audio)
+
+INPUT=$1
+START_TIME=$2
+DURATION=$3
+OUTPUT=$4
+
+usage() {
+	cat<<EOF
+cut out portion of video
+usage: $(basename $0) <input file> <start time> <duration> <output file>
+
+EOF
+	exit 1
+}
+
+test "$1" == "-h" && usage
+test $# -lt 4 && echo "$(basename $0): not enough arguments" && usage
+
+ffmpeg -i "$INPUT" -ss $START_TIME -t $DURATION -c:v copy -c:a copy "$OUTPUT"

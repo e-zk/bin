@@ -1,0 +1,18 @@
+#!/bin/sh
+# overlay image onto video
+
+INPUT=$1
+OVERLAY=$2
+OUTPUT=$3
+
+usage() {
+	cat <<EOF
+usage: $(basename $0) <input file> <overlay image> <output file>
+EOF
+	exit 1
+}
+
+[ $# -lt 3 ] && usage
+[ $# -gt 3 ] && usage
+
+ffmpeg -i "$INPUT" -i "$OVERLAY" -filter_complex "overlay=10:10" "$OUTPUT"
