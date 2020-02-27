@@ -1,0 +1,5 @@
+#!/bin/sh
+# set backlight
+
+xbacklight -set ${1:-40}
+solidwall \#2a2f2f
