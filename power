@@ -2,13 +2,13 @@
 # power menu
 # depends: xmenu, xlock
 
-case $(xmenu poweroff reboot sleep hibernate) in
+case $(xmenu poweroff reboot sleep hibernate cancel) in
 	poweroff)
-		(echo "%{c}POWEROFF NOW"; sleep 5) | FG=\#ff0000 bar
+		(echo "%{c}OFF"; sleep 5) | FG=\#ff0000 bar
 		doas shutdown -p now
 		;;
 	reboot)
-		(echo "%{c}REBOOT NOW"; sleep 5) | FG=\#ff0000 bar
+		(echo "%{c}REBOOT"; sleep 5) | FG=\#ff0000 bar
 		doas reboot
 		;;
 	sleep)
@@ -16,5 +16,7 @@ case $(xmenu poweroff reboot sleep hibernate) in
 		;;
 	hibernate)
 		xlock & doas ZZZ
+		;;
+	*)
 		;;
 esac
