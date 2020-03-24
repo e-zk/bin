@@ -1,12 +1,12 @@
 #!/bin/sh
-# starts compton if it is not running;
-# kills compton if it is running
+# starts picom if it is not running;
+# kills picom if it is running
 
-if pgrep compton; then
-	echo "killing compton..."
-	kill -9 $(pgrep compton)
+if pgrep picom; then
+	echo "killing picom..."
+	kill -9 $(pgrep picom)
 else
-	echo "starting compton..."
+	echo "starting picom..."
 
-	compton --config $HOME/etc/compton.conf &
+	picom --config $HOME/etc/compton.conf &
 fi

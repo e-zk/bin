@@ -1,5 +1,4 @@
 #!/bin/sh
-#set -ex
 
 test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
 
@@ -12,5 +11,10 @@ BW=${BW:-$borderw}
 BG=${BG:-$background}
 FG=${FG:-$foreground}
 BC=${BC:-$border}
+BOT=${BOT:-$bottom}
+case "$BOT" in
+	[yY]es)	BOT='-b' ;;
+	[nN]o)	BOT=''   ;;
+esac
 
-lemonbar -d $bottom -g ${W}x${H}+${X}+${Y} -f "$font" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh
+lemonbar -d $BOT -g ${W}x${H}+${X}+${Y} -f "$font" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh

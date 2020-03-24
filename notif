@@ -1,0 +1,33 @@
+#!/bin/sh
+# mini notification
+# usage: notif "message"
+# depends: lemonbar, txtw, bar.conf
+
+trap cleanup 1 2 3 6
+test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
+
+MESSAGE="$1"
+ID=$$
+BUFFER_FILE=$HOME/tmp/notif
+ITEMS=$(cat "$BUFFER_FILE" | wc -w)
+WIDTH=${W:-$(( `txtw -f '$font' -s 16 "x${MESSAGE}x"`))}
+HEIGHT=${H:-$height}
+BG=${BG:-$background}
+FG=${FG:-$foreground}
+DELAY=${DELAY:-3}
+
+X=$((1920-WIDTH-20))
+Y=$((50*ITEMS+20))
+
+
+cleanup() {
+	sed -i "/$ID/d" "$BUFFER_FILE"
+}
+
+# add unique notif id to buffer
+echo "$ID" >> "$BUFFER_FILE"
+
+(echo "%{c}$MESSAGE%{l}"; sleep $DELAY) | lemonbar -d -g ${WIDTH}x${HEIGHT}+${X}+${Y} -f "$font" -F $FG -B $BG
+
+# when finished, remove unique id from buffer
+cleanup
