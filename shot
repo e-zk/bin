@@ -2,12 +2,23 @@
 # take a screenshot and append date to filename
 # depends: ImageMagick (import)
 
-FILE="${1%%.*}"
-EXT="${1##${FILE}}"
 DATE="$(date '+%b.%d-%H%M')"
+if [ -z "$1" ]; then
+	FILE=''
+	EXT='.png'
+	FNAME="${DATE}${EXT}"
+else
+	FILE="${1%%.*}"
+	EXT="${1##${FILE}}"
+	FNAME="${FILE}-${DATE}${EXT}"
+fi
 
-notif "  taking '${FILE}-${DATE}${EXT}'...  "
-# wait for a sec
+# notfiy
+echo "taking ${FNAME}..." > $HOME/tmp/notified &
+
+# wait for a sec, then take the scrot
 sleep 1
-import -window root "${FILE}-${DATE}${EXT}"
-notif "  saved '${FILE}-${DATE}${EXT}'  "
+import -window root "${FNAME}"
+
+# notify
+echo "saved ${FNAME}" > $HOME/tmp/notified &

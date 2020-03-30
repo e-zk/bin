@@ -1,8 +1,22 @@
 #!/bin/sh
 # screen recorder
 # depends: ffmpeg
-# usage: rec <filename>
+# usage: rec <duration> <filename
+# duration of 0 to record until SIGINT
 
-OUTPUT=$1
+DURATION=$1
+OUTPUT=$2
 
-ffmpeg -video_size 1920x1080 -framerate 30 -f x11grab -i :0.0 -c:v libx264 -qp 0 -preset ultrafast "$OUTPUT"
+case "$DURATION" in
+	0)
+		ffmpeg -y -video_size 1920x1080 -framerate 30 -f x11grab \ 
+			-i :0.0 -c:v libx264 -qp 0 -preset ultrafast "$OUTPUT"
+		#notif "  finished recording '$OUTPUT'  "
+		;;
+	*)
+		ffmpeg -y -video_size 1920x1080 -framerate 30 -f x11grab \
+			-i :0.0 -c:v libx264 -qp 0 -preset ultrafast "$OUTPUT" & \
+			sleep $1 \
+				&& kill $! && notif "  finished recording '$OUTPUT'  "
+		;;
+esac
