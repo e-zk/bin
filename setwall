@@ -1,0 +1,49 @@
+#!/bin/sh
+# wallpaper setter
+# depends:	sxiv, xwallpaper, blur.sh
+# usage: 	setwall <-b> <-n>
+#		-b	blur the wallpaper
+#		-n	don't apply the wallpaper
+
+WPPATH=${WALLPATH:-"$HOME/Pictures"}
+WALLPATH=${1:-$WPPATH}
+TMPBLUR=/tmp/blur.jpg
+WALLPAPER=$HOME/etc/wallpaper.jpg
+
+NOACTION=0
+
+case "$1" in
+	"-b")
+		WALLPATH=${2:-$WPPATH}
+		BLUR=1 ;;
+	"-n")	WALLPATH=${2:-$WPPATH}
+		NOACTION=1
+		BLUR=0 ;;
+	*)
+		WALLPATH=${1:-$WPPATH}
+		BLUR=0  ;;
+esac
+
+SEL=$(find "$WALLPATH" -maxdepth 1 \
+	\( -name '*.jpg' -or -name '*.png' -or -name '*.jpeg' \) -exec ls -t "{}" + \
+	| sxiv -iot)
+
+if [ $NOACTION -eq 1 ]; then
+	SEL=""
+fi
+
+if [ -n "$SEL" ]; then
+
+	if [ $BLUR -eq 1 ]; then
+		blur.sh "$SEL" 45 5 $TMPBLUR
+		xwallpaper --zoom $TMPBLUR
+		cp -v $TMPBLUR "$WALLPAPER"
+		rm -f $TMPBLUR
+	else
+		xwallpaper --zoom "$SEL"
+		cp -v "$SEL" "$WALLPAPER"
+	fi
+else
+	echo "no wallpaper chosen..."
+	exit 1
+fi
