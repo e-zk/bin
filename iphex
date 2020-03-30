@@ -6,7 +6,7 @@ SPLIT=`echo "$INPUT" | sed -e 's/\./\ /g'`
 OUTPUT="0x"
 
 for part in $SPLIT; do
-	HEX=`echo "obase=16; $part" |bc`
+	HEX=`echo "obase=16; $part" |bc|awk '{printf "%02s", $0}'`
 	OUTPUT=${OUTPUT}${HEX}
 done
 
