@@ -1,0 +1,70 @@
+#!/bin/sh
+# notified: notification daemon
+#           listens for input on $FIFO
+#           and shows a notification
+# depends: lemonbar, txtw, bar.conf
+# usage: notified &
+#        echo "hello! $(date)" > $HOME/tmp/notified
+
+# 
+FIFO=${HOME}/tmp/notified
+PIDFILE=${HOME}/tmp/notified.pid
+DELAY=3
+
+# trap & cleanup
+trap cleanup 1 2 3 6
+
+# import bar config
+test -f ${ETC}/bar.conf && . ${ETC}/bar.conf
+
+# cleanup
+cleanup() {
+	rm -f "$PIDFILE"
+	exit
+}
+
+# show the notificaiton
+notification() {
+	MESSAGE="  ${1}  "
+	SKROLL=0
+	WIDTH=$(txtw -f '$font' -s 16 "x${MESSAGE}x")
+	if [ $WIDTH -gt 400 ]; then
+		WIDTH=400
+		SKROLL=1
+	fi
+	XPOS=$((1920-WIDTH-20))
+	YPOS=20
+	
+	if [ $SKROLL -eq 1 ]; then
+		(echo "$MESSAGE" | skroll -n 50 -r)
+	else
+		(echo "%{c}${MESSAGE}%{l}"; sleep $DELAY)
+	fi | lemonbar -d -g ${WIDTH}x${height}+${XPOS}+${YPOS} \
+	     -f "$font" -F $foreground -B $background
+}
+
+# if the fifo does not exist, create it
+if [ ! -p "$FIFO" ]; then
+	rm -f "$FIFO"
+	mkfifo "$FIFO"
+fi
+
+# if the pid file exists, then notified should not run
+if [ -f "$PIDFILE" ]; then
+	if [ "$(cat $PIDFILE)" != "$$" ]; then
+		echo "error: notified is already running!"
+		exit 1
+	fi
+else
+	echo "$$" > "$PIDFILE"
+fi
+
+# 
+while true; do
+	content="$(cat $FIFO)"
+	if [ ! -z "$content" ]; then
+		notification "${content}"
+	fi
+done
+
+cleanup
