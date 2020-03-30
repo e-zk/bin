@@ -1,0 +1,137 @@
+#!/bin/sh
+# stacks: multiple bars in one script
+# depends: curl, apm, bar.sh, mpc, xtitle
+
+# source config file
+test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
+
+
+# stacks on stacks on stacks
+
+# displays time
+clock() {
+	while true; do
+		echo "%{c}$(date '+%H:%M:%S') | $(date '+%Y.%m.%d')"
+		sleep 1
+	done | W=$clock_w X=$clock_x Y=$clock_y BG=$clock_bg FG=$clock_fg bar
+}
+
+# displays date
+datee() {
+	while true; do          	
+		echo "%{c}$(date '+%d %b')"
+		sleep 30
+	done | W=$date_w X=$date_x Y=$date_y BG=$date_bg FG=$date_fg bar
+}
+
+# displays battery status
+bat() {
+	local percent status ac color charging
+	while true; do
+		percent=`apm -l`
+		status=`apm -b`
+		ac=`apm -a`
+
+		# set color based on battery status (level)
+		case "${status}" in
+			0)	color="${bat_high}" ;;
+			1)	color="${bat_low}"  ;;
+			2)	color="${bat_crit}" ;;
+			*)	color="\#e00a0a"    ;;
+		esac
+
+		# A/C external charger status text
+		case "${ac}" in
+			0)	charging=""    ;;
+			1)	charging="+"   ;;
+			2)	charging="++"  ;;
+			*)	charging="???" ;;
+		esac
+
+		echo "%{c}%{A:power:}${percent}%${charging}%{A}"
+		sleep 2
+	done | W=$bat_w X=$bat_x Y=$bat_y BG=$bat_bg FG=$bat_fg bar
+}
+
+# displays wttr info
+wttr() {
+	while true; do
+		DATA=$(curl --connect-timeout 10 wttr.in/${WTTRCITY}?format=%t,%h 2>/dev/null)
+		if [ -z "$DATA" ]; then
+			TEMP="nil"
+			HUM="nil"
+		else 	
+			TEMP=$(echo $DATA | cut -d ',' -f 1 | sed 's/^+//g')
+			HUM=$(echo $DATA | cut -d ',' -f 2)
+		fi
+
+		echo "%{c}${TEMP} %{F${accent}}@%{F-} ${HUM} humidity"
+		sleep 500
+	done | W=$wttr_w X=$wttr_x Y=$wttr_y BG=$wttr_bg FG=$wttr_fg bar
+}
+
+#vol() {
+#	while true; do
+#		if pgrep mpd >/dev/null; then
+#		vol="$(mixerctl outputs.master | cut -d '=' -f 2 | cut -d ',' -f 1)"
+#		mute="$(mixerctl -n outputs.master.mute)"
+#		title="$(mpc current)"
+#		text=""	
+#	
+#		if [ "$mute" = "on" ]; then
+#			text="  X  "
+#		else
+#			text="  !  "
+#		fi
+#		
+#		#if [ -z "$title" ]; then
+#		#	text="${text}  n/a  "
+#		#else
+#		#	text="${text}  ${title}  "
+#		#fi
+
+#		if [ $(echo -n "$vol" | wc -c) -eq 3 ]; then
+#			text="${text}%{R}  ${vol} %{R}"
+#		else
+#			text="${text}%{R}  ${vol}  %{R}"
+#		fi
+
+#		echo "$text"		
+#		else
+#			echo "n/a"
+#		fi	
+#		sleep 2
+#	done | W=$music_w X=$music_x Y=$music_y BG=$music_bg FG=$music_fg bar
+#}
+
+# displays current window in scrolling text
+title() {
+	while true; do
+		wintitle="$(xtitle $(pfw))"
+		echo "$wintitle" | skroll -n 25 -d0.25 -r
+	done | W=200 X=20 Y=20 BG=$foreground FG=$background BOT="-p" bar
+}
+
+# displays currently playing track+artist in scrolling text
+music() {
+	while true; do
+		track=""
+		if [ ! -z "$(pgrep mpd)" ]; then
+			track="$(mpc status --format '%title% - %artist%' | head -n1)"
+		else
+			track="<<<<<<<<<<<<<<<<"
+		fi
+		echo "$track" | skroll -n 25 -r
+	done | BOT='no' W=$music_w X=$music_x Y=$music_y BG=$foreground FG=$background bar
+}
+
+
+case "$1" in
+	"clock") clock ;;
+	"date")  datee ;;
+	"bat")   bat   ;;
+	"wttr")  wttr  ;;
+	"music") music ;;
+	"title") title ;;
+	*)       echo "invalid stack" && exit 1 ;;
+esac

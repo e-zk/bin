@@ -1,1 +1,28 @@
-../usr/src/sh/bars/bar
+#!/bin/sh
+# open a lemonbar instance, providing access to flags as environment vars
+# e.g:
+#	W=50 Y=20 X=20 bar
+# opens a bar of width 50, at position 20,20
+
+# source config file
+test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
+
+
+W=${W:-$width}
+H=${H:-$height}
+X=${X:-$xpos}
+Y=${Y:-$ypos}
+BW=${BW:-$borderw}
+
+BG=${BG:-$background}
+FG=${FG:-$foreground}
+BC=${BC:-$border}
+BOT=${BOT:-$bottom}
+
+case "$BOT" in
+	[yY]es)	BOT='-b' ;;
+	[nN]o)	BOT=''   ;;
+	*)	BOT=''   ;;
+esac
+
+lemonbar -d $BOT -g ${W}x${H}+${X}+${Y} -f "$font" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh
