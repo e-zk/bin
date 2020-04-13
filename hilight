@@ -1,5 +1,5 @@
 #!/bin/sh
 # set backlight
 
-solidwall \#A0AAAF
-xbacklight -set 80
+/home/zzz/bin/solidwall \#A0AAAF
+/usr/X11R6/bin/xbacklight -set 80

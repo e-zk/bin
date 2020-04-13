@@ -1,5 +1,5 @@
 #!/bin/sh
 # set backlight
 
-solidwall \#0a0f0f
-xbacklight -set ${1:-40}
+/home/zzz/bin/solidwall \#0a0f0f
+/usr/X11R6/bin/xbacklight -set ${1:-40}

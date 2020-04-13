@@ -2,16 +2,38 @@
 # stacks: multiple bars in one script
 # depends: curl, apm, bar.sh, mpc, xtitle
 
+trap die 1 2 3 6 15
+
 # source config file
 test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
 
+#
+PIDPATH=${HOME}/tmp/bar
 
 # stacks on stacks on stacks
 
+# kill the running stacks
+die() {
+	pkill -KILL lemonbar
+	for file in ${PIDPATH}/*; do
+		[ -f "$file" ] || continue
+		kill -KILL "$(cat ${file})"
+		rm -f "${file}"
+	done
+}
+
 # displays time
 clock() {
+	# if the pid file exists, then something is running
+	if [ -f "${PIDPATH}/clock.pid" ]; then
+		echo "error: clock bar is already running!"
+		exit 1
+	else
+		echo "$$" > "${PIDPATH}/clock.pid"
+	fi
 	while true; do
-		echo "%{c}$(date '+%H:%M:%S') | $(date '+%Y.%m.%d')"
+		#echo "%{c}$(date '+%H:%M:%S') $(date '+%Y.%m.%d')"
+		echo "%{c}%{A:notif \"$(date '+%A %d %B')\":}$(date '+%H:%M:%S')%{A}"
 		sleep 1
 	done | W=$clock_w X=$clock_x Y=$clock_y BG=$clock_bg FG=$clock_fg bar
 }
@@ -26,6 +48,14 @@ datee() {
 
 # displays battery status
 bat() {
+	# if the pid file exists, then something is running
+	if [ -f "${PIDPATH}/bat.pid" ]; then
+		echo "error: bat bar is already running!"
+		exit 1
+	else
+		echo "$$" > "${PIDPATH}/bat.pid"
+	fi
+
 	local percent status ac color charging
 	while true; do
 		percent=`apm -l`
@@ -55,6 +85,15 @@ bat() {
 
 # displays wttr info
 wttr() {
+	
+	# if the pid file exists, then something is running
+	if [ -f "${PIDPATH}/wttr.pid" ]; then
+		echo "error: wttr bar is already running!"
+		exit 1
+	else
+		echo "$$" > "${PIDPATH}/wttr.pid"
+	fi
+
 	while true; do
 		DATA=$(curl --connect-timeout 10 wttr.in/${WTTRCITY}?format=%t,%h 2>/dev/null)
 		if [ -z "$DATA" ]; then
@@ -66,43 +105,9 @@ wttr() {
 		fi
 
 		echo "%{c}${TEMP} %{F${accent}}@%{F-} ${HUM} humidity"
-		sleep 500
+		sleep 120
 	done | W=$wttr_w X=$wttr_x Y=$wttr_y BG=$wttr_bg FG=$wttr_fg bar
 }
-
-#vol() {
-#	while true; do
-#		if pgrep mpd >/dev/null; then
-#		vol="$(mixerctl outputs.master | cut -d '=' -f 2 | cut -d ',' -f 1)"
-#		mute="$(mixerctl -n outputs.master.mute)"
-#		title="$(mpc current)"
-#		text=""	
-#	
-#		if [ "$mute" = "on" ]; then
-#			text="  X  "
-#		else
-#			text="  !  "
-#		fi
-#		
-#		#if [ -z "$title" ]; then
-#		#	text="${text}  n/a  "
-#		#else
-#		#	text="${text}  ${title}  "
-#		#fi
-
-#		if [ $(echo -n "$vol" | wc -c) -eq 3 ]; then
-#			text="${text}%{R}  ${vol} %{R}"
-#		else
-#			text="${text}%{R}  ${vol}  %{R}"
-#		fi
-
-#		echo "$text"		
-#		else
-#			echo "n/a"
-#		fi	
-#		sleep 2
-#	done | W=$music_w X=$music_x Y=$music_y BG=$music_bg FG=$music_fg bar
-#}
 
 # displays current window in scrolling text
 title() {
@@ -117,12 +122,12 @@ music() {
 	while true; do
 		track=""
 		if [ ! -z "$(pgrep mpd)" ]; then
-			track="$(mpc status --format '%title% - %artist%' | head -n1)"
+			track="$(mpc status --format '%title% // %artist%' | head -n1)"
 		else
 			track="<<<<<<<<<<<<<<<<"
 		fi
-		echo "$track" | skroll -n 25 -r
-	done | BOT='no' W=$music_w X=$music_x Y=$music_y BG=$foreground FG=$background bar
+		echo "$track" | skroll -n $((($music_w / 10) + 10 )) -r
+	done | BOT='yes' W=$music_w X=$music_x Y=$music_y BG=$music_bg FG=$music_fg bar
 }
 
 
@@ -133,5 +138,6 @@ case "$1" in
 	"wttr")  wttr  ;;
 	"music") music ;;
 	"title") title ;;
+	"kill")  die  ;;
 	*)       echo "invalid stack" && exit 1 ;;
 esac

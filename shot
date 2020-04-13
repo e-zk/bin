@@ -14,11 +14,11 @@ else
 fi
 
 # notfiy
-echo "taking ${FNAME}..." > $HOME/tmp/notified &
+notif "taking scrot..."
 
 # wait for a sec, then take the scrot
 sleep 1
 import -window root "${FNAME}"
 
 # notify
-echo "saved ${FNAME}" > $HOME/tmp/notified &
+notif "saved ${FNAME}"

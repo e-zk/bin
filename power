@@ -4,11 +4,11 @@
 
 case $(xmenu poweroff reboot sleep hibernate cancel) in
 	poweroff)
-		(echo "%{c}OFF"; sleep 5) | FG=\#ff0000 bar
+		notif "alert:shutdown now" 
 		doas shutdown -p now
 		;;
 	reboot)
-		(echo "%{c}REBOOT"; sleep 5) | FG=\#ff0000 bar
+		notif "alert:reboot now" 
 		doas reboot
 		;;
 	sleep)
@@ -17,6 +17,7 @@ case $(xmenu poweroff reboot sleep hibernate cancel) in
 	hibernate)
 		xlock & doas ZZZ
 		;;
-	*)
+	*)	
+		exit 1
 		;;
 esac

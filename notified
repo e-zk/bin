@@ -2,20 +2,22 @@
 # notified: notification daemon
 #           listens for input on $FIFO
 #           and shows a notification
-# depends: lemonbar, txtw, bar.conf
+# depends: lemonbar, txtw, skroll, bar.conf
 # usage: notified &
 #        echo "hello! $(date)" > $HOME/tmp/notified
 
-# 
+# change these...
+CONFIG=${HOME}/etc/bar.conf
 FIFO=${HOME}/tmp/notified
 PIDFILE=${HOME}/tmp/notified.pid
 DELAY=3
 
 # trap & cleanup
-trap cleanup 1 2 3 6
+trap cleanup 1 2 3 6 14 15
 
-# import bar config
-test -f ${ETC}/bar.conf && . ${ETC}/bar.conf
+# set color information
+FG=''
+BG=''
 
 # cleanup
 cleanup() {
@@ -23,47 +25,109 @@ cleanup() {
 	exit
 }
 
-# show the notificaiton
-notification() {
-	MESSAGE="  ${1}  "
-	SKROLL=0
-	WIDTH=$(txtw -f '$font' -s 16 "x${MESSAGE}x")
-	if [ $WIDTH -gt 400 ]; then
-		WIDTH=400
-		SKROLL=1
+# show a notificaiton
+show_notif() {
+	set -ex
+	message="   ${1}   "
+	skroll=0
+	width=$(txtw -f '$font' -s 16 "x${message}x")
+	if [ $width -gt 400 ]; then
+		width=400
+		skroll=1
 	fi
-	XPOS=$((1920-WIDTH-20))
-	YPOS=20
+	xpos=$((1920-width-20))
+	ypos=0
 	
-	if [ $SKROLL -eq 1 ]; then
-		(echo "$MESSAGE" | skroll -n 50 -r)
+	if [ $skroll -eq 1 ]; then
+		(echo "$message" | skroll -n 50 -r)
 	else
-		(echo "%{c}${MESSAGE}%{l}"; sleep $DELAY)
-	fi | lemonbar -d -g ${WIDTH}x${height}+${XPOS}+${YPOS} \
-	     -f "$font" -F $foreground -B $background
+		(echo "%{c}${message}%{l}"; sleep ${DELAY})
+	fi | lemonbar -d -g ${width}x${height}+${xpos}+${ypos} \
+	     -f "$font" -F ${FG} -B ${BG}
+}
+
+# import the config file if it exists
+load_config() {
+	if [ -f "$CONFIG" ]; then
+		. "$CONFIG"
+	else
+		echo "error: config '${CONFIG}' does not exist! exiting."
+		exit 1
+	fi
 }
 
 # if the fifo does not exist, create it
-if [ ! -p "$FIFO" ]; then
-	rm -f "$FIFO"
-	mkfifo "$FIFO"
-fi
-
-# if the pid file exists, then notified should not run
-if [ -f "$PIDFILE" ]; then
-	if [ "$(cat $PIDFILE)" != "$$" ]; then
-		echo "error: notified is already running!"
-		exit 1
+check_fifo() {
+	if [ ! -p "$FIFO" ]; then
+		echo "warn: '${FIFO}' does not exist or is not a FIFO."
+		echo "       ...creating '${FIFO}'"
+		rm -f "$FIFO"
+		mkfifo "$FIFO"
 	fi
-else
-	echo "$$" > "$PIDFILE"
-fi
+}
 
-# 
+# if the pid file exists, then notified should not run; if it does not exist,
+# then create it and add our PID to it
+check_pid() {
+	if [ -f "$PIDFILE" ]; then
+		if [ "$(cat $PIDFILE)" != "$$" ]; then
+			echo "error: notified is already running! exiting."
+			exit 1
+		fi
+	else
+		echo "$$" > "$PIDFILE"
+	fi
+}
+
+## runtime 
+load_config
+check_pid
+check_fifo
+
+## main loop 
 while true; do
+
+	# get content form fifo
 	content="$(cat $FIFO)"
-	if [ ! -z "$content" ]; then
-		notification "${content}"
+
+	# if the fifo's content is non-null
+	if [ -n "$content" ]; then
+
+		# by default the notification message is the entire content
+		message="$content"
+
+		FG=$foreground # reset FG color
+		BG=$background # reset BG color
+
+		## check for options
+		# if the content contains a ':'
+		#if echo "$content" | grep ':'>/dev/null; then
+		case "$content" in
+		*:*)
+			opts=${content%%:*}             # the option is the text before the first ':'
+			message=${content##${opts}:}    # message is all the text after '${opts}:'
+
+			## options parsing
+			case "$opts" in
+				alert)
+					# alert: change color to red
+					FG='#ff2233'
+					BG='#000000'
+					;;
+				d*)
+					if echo "$opts" | grep 'd[0-9]'; then
+						DELAY=$(echo "$opts" | grep -o '[0-9]')
+					fi
+					;;
+				*)
+					# unrecognised option, print the whole text
+					message="$content"
+					;;
+			esac
+		;;
+		#fi
+		esac
+		show_notif "$message"
 	fi
 done
 

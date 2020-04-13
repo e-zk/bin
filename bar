@@ -25,4 +25,4 @@ case "$BOT" in
 	*)	BOT=''   ;;
 esac
 
-lemonbar -d $BOT -g ${W}x${H}+${X}+${Y} -f "$font" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh
+lemonbar -d $BOT -g ${W}x${H}+${X}+${Y} -f "$font" -f "$font2" -B"$BG" -F "$FG" -u 1 -i $BW -I"$BC" "$@" | sh

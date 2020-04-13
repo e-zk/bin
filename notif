@@ -3,6 +3,6 @@
 # usage: notif "message"
 
 FIFO=${HOME}/tmp/notified
-MESSAGE="  ${1}  "
+MESSAGE="${1}"
 
-echo "${MESSAGE}" > "$FIFO"
+echo -n "${MESSAGE}" > "$FIFO"
