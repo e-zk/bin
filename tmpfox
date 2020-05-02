@@ -42,7 +42,7 @@ user_pref("javascript.enabled",false);
 EOF
 
 # start a new firefox instance w/ the temporary profile directory
-firefox-esr --profile "$PROFILE_DIR" --no-remote --new-instance
+/home/zzz/bin/firefox --profile "$PROFILE_DIR"
 
 # remove the profile directory
 cleanup

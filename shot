@@ -14,11 +14,11 @@ else
 fi
 
 # notfiy
-notif "taking scrot..."
+notif "taking shot..." &
 
 # wait for a sec, then take the scrot
 sleep 1
 import -window root "${FNAME}"
 
 # notify
-notif "saved ${FNAME}"
+notif "saved ${FNAME}" &

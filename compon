@@ -2,11 +2,15 @@
 # starts picom if it is not running;
 # kills picom if it is running
 
-if pgrep picom; then
-	echo "killing picom..."
-	kill -9 $(pgrep picom)
-else
-	echo "starting picom..."
+# change this to 'compton' if you use compton
+COMMAND=picom
+CONFIG=$ETC/picom.conf
 
-	picom --config $HOME/etc/compton.conf &
+if pgrep $COMMAND >/dev/null; then
+	echo "killing ${COMMAND}..."
+	kill -9 $(pgrep $COMMAND)
+else
+	echo "starting ${COMMAND}..."
+
+	$COMMAND --experimental-backends --config $CONFIG &
 fi

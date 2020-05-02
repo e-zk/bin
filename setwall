@@ -35,7 +35,7 @@ fi
 if [ -n "$SEL" ]; then
 
 	if [ $BLUR -eq 1 ]; then
-		blur.sh "$SEL" 45 5 $TMPBLUR
+		blur.sh "$SEL" 30 4 $TMPBLUR
 		xwallpaper --zoom $TMPBLUR
 		cp -v $TMPBLUR "$WALLPAPER"
 		rm -f $TMPBLUR
