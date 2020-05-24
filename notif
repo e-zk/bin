@@ -2,7 +2,7 @@
 # notif: prints notification content to notified FIFO
 # usage: notif "message"
 
-FIFO=${HOME}/tmp/notified
-MESSAGE="${1}"
+FIFO=${HOME}/var/notified.fifo
+MESSAGE="${@}"
 
 echo -n "${MESSAGE}" > "$FIFO"

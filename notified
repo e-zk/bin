@@ -6,18 +6,28 @@
 # usage: notified &
 #        echo "hello! $(date)" > $HOME/tmp/notified
 
-# change these...
+# you'll probably want to change these...
 CONFIG=${HOME}/etc/bar.conf
-FIFO=${HOME}/tmp/notified
-PIDFILE=${HOME}/tmp/notified.pid
+FIFO=${HOME}/var/notified.fifo
+PIDFILE=${HOME}/var/notified.pid
 DELAY=3
 
-# trap & cleanup
+# trap = cleanup
 trap cleanup 1 2 3 6 14 15
 
 # set color information
 FG=''
 BG=''
+
+# import the config file if it exists
+if [ -f "$CONFIG" ]; then
+	. "$CONFIG"
+else
+	echo "error: config '${CONFIG}' does not exist! exiting."
+	exit 1
+fi
+
+WIDTH=$width
 
 # cleanup
 cleanup() {
@@ -27,40 +37,31 @@ cleanup() {
 
 # show a notificaiton
 show_notif() {
-	set -ex
-	message="   ${1}   "
+	message=" ${1}  "
 	skroll=0
-	width=$(txtw -f '$font' -s 16 "x${message}x")
+	unset width
+	width=${BAR_WIDTH:-$(txtw -f "${font}" "XX${message}XX")}
 	if [ $width -gt 400 ]; then
 		width=400
 		skroll=1
 	fi
-	xpos=$((1920-width-20))
-	ypos=0
+	xpos=$((960-(width/2)))
+	ypos=${ypos:-0}
 	
 	if [ $skroll -eq 1 ]; then
 		(echo "$message" | skroll -n 50 -r)
 	else
 		(echo "%{c}${message}%{l}"; sleep ${DELAY})
 	fi | lemonbar -d -g ${width}x${height}+${xpos}+${ypos} \
-	     -f "$font" -F ${FG} -B ${BG}
+	     -f "$font" -F ${FG} -B ${BG} -b
 }
 
-# import the config file if it exists
-load_config() {
-	if [ -f "$CONFIG" ]; then
-		. "$CONFIG"
-	else
-		echo "error: config '${CONFIG}' does not exist! exiting."
-		exit 1
-	fi
-}
 
 # if the fifo does not exist, create it
 check_fifo() {
 	if [ ! -p "$FIFO" ]; then
 		echo "warn: '${FIFO}' does not exist or is not a FIFO."
-		echo "       ...creating '${FIFO}'"
+		echo "      ...creating '${FIFO}'."
 		rm -f "$FIFO"
 		mkfifo "$FIFO"
 	fi
@@ -71,7 +72,8 @@ check_fifo() {
 check_pid() {
 	if [ -f "$PIDFILE" ]; then
 		if [ "$(cat $PIDFILE)" != "$$" ]; then
-			echo "error: notified is already running! exiting."
+			echo "error: notified is already running!"
+			echo "       ...exiting."
 			exit 1
 		fi
 	else
@@ -79,12 +81,10 @@ check_pid() {
 	fi
 }
 
-## runtime 
-load_config
 check_pid
 check_fifo
 
-## main loop 
+# main loop 
 while true; do
 
 	# get content form fifo
@@ -99,36 +99,49 @@ while true; do
 		FG=$foreground # reset FG color
 		BG=$background # reset BG color
 
-		## check for options
-		# if the content contains a ':'
-		#if echo "$content" | grep ':'>/dev/null; then
+		# if the content contains a ':' (options separator)
 		case "$content" in
 		*:*)
-			opts=${content%%:*}             # the option is the text before the first ':'
-			message=${content##${opts}:}    # message is all the text after '${opts}:'
+			# the options list is the text before the first ':' 
+			opts=${content%%:*}
+			options=$(echo "$opts" | sed -e 's/,/ /g')
 
-			## options parsing
-			case "$opts" in
-				alert)
-					# alert: change color to red
-					FG='#ff2233'
-					BG='#000000'
-					;;
-				d*)
-					if echo "$opts" | grep 'd[0-9]'; then
-						DELAY=$(echo "$opts" | grep -o '[0-9]')
-					fi
-					;;
-				*)
-					# unrecognised option, print the whole text
-					message="$content"
-					;;
-			esac
+			# the message is all the text after '${opts}:'
+			message=${content##${opts}:}    
+			
+			# options parsing
+			for opt in ${options}; do
+				case "$opt" in
+					alert)
+						# alert: change color to red
+						FG='#ff2233'
+						BG='#000000'
+						;;
+					fg*)
+						FG="${opt##fg}"
+						;;
+					bg*)
+						BG="${opt##bg}"
+						;;
+					d*)
+						DELAY=${opt##d}
+						;;
+					w*)
+						WIDTH=${opt##w}
+						;;
+					*)
+						# unrecognised option, print the whole text
+						message="$content"
+						;;
+				esac
+			done
 		;;
-		#fi
 		esac
+
+		# finally, show the notification
 		show_notif "$message"
 	fi
 done
 
+# :)
 cleanup
