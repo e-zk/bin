@@ -8,7 +8,7 @@ trap die 1 2 3 6 15
 test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
 
 #
-PIDPATH=${HOME}/tmp/bar
+PIDPATH=${HOME}/var/bar
 
 # stacks on stacks on stacks
 
@@ -33,7 +33,7 @@ clock() {
 	fi
 	while true; do
 		#echo "%{c}$(date '+%H:%M:%S') $(date '+%Y.%m.%d')"
-		echo "%{c}%{A:notif \"$(date '+%A %d %B')\":}$(date '+%H:%M:%S')%{A}"
+		echo "%{c}%{A:notif \"$(date '+%A %d %B')\":}$(date '+%F  %H:%M:%S')%{A}"
 		sleep 1
 	done | W=$clock_w X=$clock_x Y=$clock_y BG=$clock_bg FG=$clock_fg bar
 }
