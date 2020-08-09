@@ -6,5 +6,5 @@ if [ "$(basename $0)" == "vdl" ]; then
 	youtube-dl --output '%(title)s.%(ext)s' ${@}
 else
 	# download audio-only
-	youtube-dl -x --audio-format best --audio-quality 0 --embed-thumbnail --add-metadata --output '%(title)s.%(ext)s' ${@}
+	youtube-dl -x --audio-format best --embed-thumbnail --add-metadata --output '%(title)s.%(ext)s' ${@}
 fi
