@@ -37,7 +37,7 @@ cleanup() {
 
 # show a notificaiton
 show_notif() {
-	message=" ${1}  "
+	message=" ${1} "
 	skroll=0
 	unset width
 	width=${BAR_WIDTH:-$(txtw -f "${font}" "XX${message}XX")}
@@ -45,15 +45,17 @@ show_notif() {
 		width=400
 		skroll=1
 	fi
-	xpos=$((960-(width/2)))
-	ypos=${ypos:-0}
+	#xpos=$((960-(width/2)))
+	xpos=$((1920 - width - 40))
+	#ypos=${ypos:-0}
+	ypos=40
 	
 	if [ $skroll -eq 1 ]; then
 		(echo "$message" | skroll -n 50 -r)
 	else
 		(echo "%{c}${message}%{l}"; sleep ${DELAY})
 	fi | lemonbar -d -g ${width}x${height}+${xpos}+${ypos} \
-	     -f "$font" -F ${FG} -B ${BG} -b
+	     -f "$font" -F ${FG} -B ${BG}
 }
 
 
