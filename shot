@@ -2,7 +2,7 @@
 # take a screenshot and append date to filename
 # depends: ImageMagick (import)
 
-DATE="$(date '+%b.%d-%H%M')"
+DATE="$(date '+%d-%m-%Y-%H%M')"
 if [ -z "$1" ]; then
 	FILE=''
 	EXT='.png'
