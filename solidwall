@@ -1,0 +1,20 @@
+#!/bin/sh
+# info: when compton is running, solid walls cannot be set via xsetroot(1)
+#       this aims to replace xsetroot for setting solid color backgrounds
+# depends: imagemagick (convert), xwallpaper
+
+COLOR="$1"
+FILE=/tmp/image.png
+FFFF=/tmp/image2.png
+
+usage() {
+	echo "usage: $(basename $0) <#hexcol>"
+	exit 1
+}
+
+[ $# -ne 1 ] && usage
+
+convert -size 100x100 xc:"${COLOR}" "$FILE"
+xwallpaper --tile "$FILE"
+
+rm -f "$FILE"

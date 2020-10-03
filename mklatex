@@ -1,0 +1,45 @@
+#!/bin/sh
+# usage: mklatex <type> <filename>
+# 	<type>		report|notes
+# 	<filename>	name of .tex file
+
+TEMPLATE="$1"
+TEMP_FILE="$HOME/etc/texplates/${TEMPLATE}.tex"
+DOC_NAME="$2"
+DOC="./${DOC_NAME}.tex"
+DOC_MAKE="./Makefile"
+
+[ ! -f "$TEMP_FILE" ]	&& echo "error: unknown template: \"$TEMP_FILE\"" \
+			&& exit 1
+
+cat "$TEMP_FILE" > "$DOC"
+cat <<EOF > "$DOC_MAKE"
+.POSIX:
+.PHONY: default all toc pdf viewpdf clean cleanpdf backup
+
+BASE = ${DOC_NAME}
+VIEWER = zathura
+
+default: pdf
+all: viewpdf
+
+toc:
+	@pdflatex -draftmode \$(BASE).tex >/dev/null
+
+pdf:
+	@pdflatex \$(BASE).tex >/dev/null
+
+viewpdf: pdf
+	@\$(VIEWER) \$(BASE).pdf
+
+clean:
+	rm -f *.log
+	rm -f *.dvi
+	rm -f *.toc
+	rm -f *.lot
+	rm -f *.tof
+
+cleanpdf:
+	@rm -i *.pdf
+
+EOF
