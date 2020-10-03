@@ -1,0 +1,19 @@
+#!/bin/sh
+# remove file if it is a symlink
+
+FILE="$1"
+FTYPE="$(file $FILE)"
+
+case "$FTYPE" in
+	"${FILE}: symbolic link to"*)
+	;;
+	"${FILE}: broken symbolic link to"*)
+	;;
+	*)
+		echo "error: $FILE is not a symbolic link"
+		exit 1
+	;;
+esac
+
+echo "$FILE is a symbolic link"
+rm -i "$FILE"
