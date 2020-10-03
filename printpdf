@@ -5,4 +5,5 @@ PRINTER=${PRINTER:-"192.168.0.69"}
 PORT=9100
 FILE="$1"
 
-cat "$FILE" | nc ${PRINTER} ${PORT}
+nc ${PRINTER} ${PORT} < "$FILE"
+#pdf2ps "$FILE" - | nc ${PRINTER} ${PORT}
