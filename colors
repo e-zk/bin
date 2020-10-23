@@ -1,7 +1,7 @@
 #!/bin/sh
 # print colors
 
-def_char="   " 
+def_char="-> " 
 
 horiz() {
 	for i in 0 1 2 3 4 5 6 7; do
@@ -20,7 +20,7 @@ vert() {
 		xcolor=$(getxres "*.color${i}")
 		xcolorb=$(getxres "*.color$((i + 8))")
 		printf "\033[3%sm%s \033[30m\033[4%sm %s \033[0m " "$i" "$xcolor" "$i" "$char"
-		printf "\033[9%sm%s \033[30m\033[10%sm %s \033[0m" "$i" "$xcolor" "$i" "$char"
+		printf "\033[9%sm%s \033[30m\033[10%sm %s \033[0m" "$i" "$xcolorb" "$i" "$char"
 		printf '\n'
 	done
 }
