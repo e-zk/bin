@@ -1,5 +1,5 @@
 #!/bin/sh
 
-for win in $(lswin $@); do
+for win in $(lsw $@); do
 	echo -ne "$win\t$(xtitle $win)\n"
 done
