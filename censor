@@ -1,0 +1,5 @@
+#!/bin/sh
+
+WORDLIST=${XDG_CONFIG_HOME}/.censor
+
+sed -f ${WORDLIST}
