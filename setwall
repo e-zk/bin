@@ -1,9 +1,9 @@
 #!/bin/sh
 # wallpaper setter
-# depends:	sxiv, xwallpaper, blur.sh
-# usage: 	setwall <-b> <-n>
-#		-b	blur the wallpaper
-#		-n	don't apply the wallpaper
+# depends: sxiv, xwallpaper, blur.sh
+# usage: hsetwall <-b> <-n>
+#    -b    blur the wallpaper
+#    -n    don't apply the wallpaper
 
 WPPATH=${WALLPATH:-"$HOME/Pictures"}
 WALLPATH=${1:-$WPPATH}
@@ -28,11 +28,7 @@ SEL=$(find "$WALLPATH" -maxdepth 1 \
 	\( -name '*.jpg' -or -name '*.png' -or -name '*.jpeg' \) -exec ls -t "{}" + \
 	| sxiv -iot)
 
-if [ $NOACTION -eq 1 ]; then
-	SEL=""
-fi
-
-if [ -n "$SEL" ]; then
+if [ $NOACTION -eq 0 -a -n "$SEL" ]; then
 
 	if [ $BLUR -eq 1 ]; then
 		blur.sh "$SEL" 20 4 $TMPBLUR
