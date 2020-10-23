@@ -1,0 +1,26 @@
+#!/bin/sh
+
+WALLPATH=${WALLPATH:-${HOME}/Pictures}
+blur=0
+
+case "$1" in
+	"-b")
+		blur=1
+		shift
+		;;
+esac
+
+WALLPATH=${1:-$WALLPATH}
+
+wall="${WALLPATH}/$(ls "$WALLPATH" | sort -R | head -1)"
+
+echo "setting ${wall##*/}..."
+
+if [ $blur -eq 1 ]; then
+	blur.sh "$wall" 20 4 /tmp/blur.png
+	wall=/tmp/blur.png
+fi
+
+xwallpaper --zoom "$wall"
+
+rm -f /tmp/blur.png
