@@ -1,0 +1,15 @@
+#!/bin/sh
+
+INPUT=$1
+#WxH+X+Y
+DIMENS=$2
+OUTPUT=$3
+
+# geometry parsing logic (yeah, it's ugly)
+W=${DIMENS%%x*}
+tmp=${DIMENS##${W}x}  H=${tmp%%+*}
+tmp=${DIMENS##*${H}+} X=${tmp%%+*}
+Y=${DIMENS##*${X}+}
+
+ffmpeg -i "$INPUT" -filter:v "crop=${W}:${H}:${X}:${Y}" "$OUTPUT"
+
