@@ -5,16 +5,20 @@
 trap cleanup 1 2 3 6
 
 # setup profiledir
-PROFILE_DIR=`mktemp -d -p /tmp 'firefox.XXXXXX'`
+HOME_DIR=$(mktemp -d -p /tmp 'firefox.XXXXXX')
+PROFILE_DIR=${HOME_DIR}/firefox
 
 # user agent string
-USER_AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0"
+USER_AGENT="Mozilla/5.0 (Windows NT 6.1; rv:60.0) Gecko/20100101 Firefox/60.0"
 
 # remove the profile dir
 cleanup() {
 	rm -rvf "$PROFILE_DIR"
+	rm -rvf "$HOME_DIR"
 }
 
+# create profile directory
+mkdir -p "$PROFILE_DIR"
 
 # write user.js settings
 cat <<EOF > "${PROFILE_DIR}/user.js"
@@ -41,8 +45,11 @@ user_pref("browser.shell.checkDefaultBrowser", false);
 user_pref("javascript.enabled",false);
 EOF
 
+# force fake HOME dir
+export HOME=${HOME_DIR}
+
 # start a new firefox instance w/ the temporary profile directory
-/home/zzz/bin/firefox --profile "$PROFILE_DIR"
+MOZ_ACCELERATED=1 firefox-esr --new-instance --no-remote --profile "$PROFILE_DIR"
 
 # remove the profile directory
 cleanup
