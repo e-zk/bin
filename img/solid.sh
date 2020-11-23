@@ -6,7 +6,7 @@
 OUTPUT="out.png"
 DIMENS="1920x1080"
 SCALE='100%'
-FAIL=
+FAIL=0
 
 # usage
 usage() {
