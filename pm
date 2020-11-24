@@ -1,8 +1,9 @@
 #!/bin/sh
+# openbsd pkg shortcuts
 
 usage() {
 	cat <<-EOF
-	$(basename $0) [a|add] [s|size] [d|del|delete] [i|info] PKGNAME ...
+	$(basename $0) [a|add] [s|size] [d|del|delete] [i|info] [q|query|search] PKGNAME ...
 EOF
 }
 
@@ -13,7 +14,7 @@ case "$1" in
 	s|size) shift
 		pkg_add -s "$@"
 		;;
-	q|query) shift
+	q|query|search) shift
 		pkg_info -Q "$@"
 		;;
 	d|del|delete) shift
