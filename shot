@@ -13,16 +13,6 @@ else
 	FNAME="${FILE}-${DATE}${EXT}"
 fi
 
-# notfiy
-notif "taking shot..." &
-
-# *click*
-#printf "\033[34m*click*\n"
-#printf "\033[2mthat's going in my rice compilation\033[0m\n"
-
 # wait for a sec, then take the scrot
 sleep 1
 import -window root "${FNAME}"
-
-# notify
-notif "saved ${FNAME}" &
