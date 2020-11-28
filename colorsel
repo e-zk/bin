@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+
+colorpicker -d | while read c; do
+	echo "%{c}%{A3:die:}  ${c}  %{A}" | lemonbar -g 200x200+40+80 -B ${c} -n "${c}" -p -f 'Cozette:style=Medium:pizelsize=16' | while read cmd; do
+		case "$cmd" in
+			die) exit 0 ;;
+		esac
+	done &
+done
