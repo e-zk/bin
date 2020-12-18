@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -ex
 # tmpfox - generate a temporary firefox profile
 
 # trap anything; clean up
@@ -44,6 +44,8 @@ user_pref("browser.shell.checkDefaultBrowser", false);
 // disable javascript by default
 user_pref("javascript.enabled",false);
 EOF
+
+ln -s ${HOME}/.Xauthority ${HOME_DIR}/.Xauthority
 
 # force fake HOME dir
 export HOME=${HOME_DIR}

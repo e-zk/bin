@@ -2,5 +2,4 @@
 # set backlight
 
 /usr/X11R6/bin/xbacklight -set 80
-/home/zzz/bin/solidwall \#A0AAAF
 sct 6400

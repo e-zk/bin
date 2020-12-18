@@ -12,5 +12,6 @@ if pgrep $COMMAND >/dev/null; then
 else
 	echo "starting ${COMMAND}..."
 
-	$COMMAND --experimental-backends --config $CONFIG &
+	#$COMMAND --experimental-backends --config $CONFIG &
+	$COMMAND --config $CONFIG &
 fi
