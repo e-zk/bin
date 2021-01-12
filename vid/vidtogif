@@ -3,8 +3,7 @@
 #set -ex
 
 SCALE=320
-#PALETTE=`mktemp palette.png.XXXXXX`
-PALETTE=tmp.palette.png
+PALETTE=
 
 usage() {
         cat <<EOF
@@ -26,12 +25,13 @@ check_opts() {
 	
 }
 
-while getopts hi:s:d:f:S:o: opt; do
+while getopts hi:s:d:f:S:o:p: opt; do
         case $opt in
                 i)	INPUT=$OPTARG ;;
                 f)	FPS=$OPTARG ;;
                 S)	SCALE=$OPTARG ;;
                 o)	OUTPUT=$OPTARG ;;
+		p)      PALLETE=$OPTARG ;;
 		h)	usage ;;
                 *)	usage ;;
         esac
@@ -40,8 +40,11 @@ done
 # check required options
 check_opts
 
-# generate the palette
-ffmpeg -y -i "$INPUT" -vf fps=${FPS},scale=${SCALE}:-1:flags=lanczos,palettegen "$PALETTE"
+# generate the palette if one is not given
+if [ -z "$PALLETE" ]; then
+	PALLETE=tmp.pallete.png
+	ffmpeg -y -i "$INPUT" -vf fps=${FPS},scale=${SCALE}:-1:flags=lanczos,palettegen "$PALETTE"
+fi
 
 # convert the video, using the palette
 ffmpeg -i "$INPUT" -i "$PALETTE" -filter_complex "fps=${FPS},scale=${SCALE}:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=2" "$OUTPUT"
