@@ -4,7 +4,7 @@
 # trap anything; clean up
 trap cleanup 1 2 3 6
 
-# setup profiledir
+# setup homedir + profiledir
 HOME_DIR=$(mktemp -d -p /tmp 'firefox.XXXXXX')
 PROFILE_DIR=${HOME_DIR}/firefox
 
@@ -45,6 +45,7 @@ user_pref("browser.shell.checkDefaultBrowser", false);
 user_pref("javascript.enabled",false);
 EOF
 
+# link Xauthority
 ln -s ${HOME}/.Xauthority ${HOME_DIR}/.Xauthority
 
 # force fake HOME dir
