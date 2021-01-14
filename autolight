@@ -1,0 +1,14 @@
+#!/bin/sh
+# automatically set screen brightness + temp based on current time
+
+HR="$(date '+%H')"
+
+if [ $HR -lt 6 ]; then
+	lowlight
+elif [ $HR -lt 16 ]; then
+	hilight
+elif [ $HR -lt 19 ]; then
+	lowlight 3000
+elif [ $HR -le 23 ]; then
+	lowlight
+fi
