@@ -2,11 +2,10 @@
 # remove file if it is a symlink
 
 FILE="$1"
-FTYPE="$(file $FILE)"
+FTYPE="$(file "$FILE")"
 
 case "$FTYPE" in
 	"${FILE}: symbolic link to"*)
-	;;
 	"${FILE}: broken symbolic link to"*)
 	;;
 	*)
@@ -15,5 +14,4 @@ case "$FTYPE" in
 	;;
 esac
 
-echo "$FILE is a symbolic link"
 rm -i "$FILE"
