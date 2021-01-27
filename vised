@@ -1,0 +1,31 @@
+#!/bin/sh
+# 
+# (c) e-zk 2021 wtfpl
+
+usage() {
+	cat <<EOF
+$(basename "$0"): convert line endings, edit file, convert back
+usage: $(basename "$0") [win_path]
+where:
+    win_path  is the windows path to a file (e.g. 'C:\Windows\...')
+EOF
+}
+
+case "$1" in "-h"|"--help") usage && exit 0; esac
+[ -f "$WSLP" ] || usage && exit 1
+
+# convert path
+WSLP="$(wslpath "$1")"
+
+# make tmpfile
+tmpfile="$(mktemp $(basename "$WSLP").XXXXXX)"
+cat "$WSLP" > "$tmpfile"
+
+# d2u -> EDITOR -> u2d
+dos2unix "$tmpfile"
+${EDITOR:-${VISUAL:-vi}} "$tmpfile"
+unix2dos "$tmpfile"
+
+# TODO do a diff before overwriting
+# overwrite
+cat "$tmpfile" > "$wslpath"
