@@ -1,8 +1,24 @@
 #!/bin/sh
+# mount windows drive
+# (c) e-zk 2021 wtfpl
 
 DRV="$(echo "${1%%:*}" | tr '[A-Z]' '[a-z]')"
-MNT="/mnt/${DRV}"
+MNT="${2:-/mnt/${DRV}}"
 
-echo "mounting ${DRV}:..."
+usage() {
+	cat <<EOF
+mtdrv: mount a windows drive (requires root)
+usage: mtdrv DRIVE [MOUNTPOINT]
+where:
+    DRIVE       drive letter (e.g. 'F:' or 'F")
+    MOUNTPOINT  inode to mount the drive to (optional)
+if [MOUNTPOINT] is not given, the drive will be mounted to /mnt/[DRIVE]
+EOF
+}
+
+test $# -ne 1 && usage && exit 1
+case "$1" in "-h"|"--help") usage && exit 0; esac
+
+echo "mounting ${DRV}: at ${MNT}..."
 mkdir -p "$MNT"
 mount -t drvfs "${DRV}:" "$MNT"
