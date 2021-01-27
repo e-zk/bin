@@ -12,10 +12,10 @@ EOF
 }
 
 case "$1" in "-h"|"--help") usage && exit 0; esac
-[ -f "$WSLP" ] || usage && exit 1
 
 # convert path
 WSLP="$(wslpath "$1")"
+[ -f "$WSLP" ] || usage && exit 1
 
 # make tmpfile
 tmpfile="$(mktemp $(basename "$WSLP").XXXXXX)"
