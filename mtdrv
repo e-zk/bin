@@ -1,0 +1,8 @@
+#!/bin/sh
+
+DRV="$(echo "${1%%:*}" | tr '[A-Z]' '[a-z]')"
+MNT="/mnt/${DRV}"
+
+echo "mounting ${DRV}:..."
+mkdir -p "$MNT"
+mount -t drvfs "${DRV}:" "$MNT"
