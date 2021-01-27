@@ -1,5 +1,4 @@
 #!/bin/sh
-# 
 # (c) e-zk 2021 wtfpl
 
 usage() {
@@ -15,7 +14,7 @@ case "$1" in "-h"|"--help") usage && exit 0; esac
 
 # convert path
 WSLP="$(wslpath "$1")"
-[ -f "$WSLP" ] || usage && exit 1
+[ -f "$WSLP" ] || { usage && exit 1; }
 
 # make tmpfile
 tmpfile="$(mktemp $(basename "$WSLP").XXXXXX)"
@@ -26,6 +25,5 @@ dos2unix "$tmpfile"
 ${EDITOR:-${VISUAL:-vi}} "$tmpfile"
 unix2dos "$tmpfile"
 
-# TODO do a diff before overwriting
 # overwrite
-cat "$tmpfile" > "$wslpath"
+cat "$tmpfile" > "$WSLP"
