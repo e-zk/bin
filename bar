@@ -1,8 +1,23 @@
 #!/bin/sh
-# open a lemonbar instance, providing access to flags as environment vars
-# e.g:
-#	W=50 Y=20 X=20 bar
-# opens a bar of width 50, at position 20,20
+#
+# e-zk (c) wtfpl 2021
+# open a lemonbar instance, providing access to flags via environment vars
+# geometry options
+#     W       bar width
+#     H       bar height
+#     X       bar x position
+#     Y       bar y position
+#     BW      border width
+#
+# color options
+#     BG      background color (hex #[aa]rrggbb)
+#     FG      foreground color
+#     BC      border color
+#     BOT     place bar on bottom (yes/no)
+#
+# example:
+#     (echo "hello!"; sleep 2) | \
+#     W=200 H=40 X=20 Y=20 BG=\#000000 FG=\#ffeeee BOT=yes bar
 
 # source config file
 test -f $HOME/etc/bar.conf && . $HOME/etc/bar.conf
