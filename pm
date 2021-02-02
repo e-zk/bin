@@ -9,7 +9,7 @@ usage() {
 	    d|delete  remove package
 	    i|info    get package info
 	    q|query   query/search for packages
-	    s|size    get install size of package w/o installing
+	    s|size    get install size of package (w/o installing)
 	    h|help    this help message
 EOF
 }
@@ -35,7 +35,7 @@ case "$1" in
 		exit 0
 		;;
 	*)
-		printf "%s: unknown: %s\n" "$0" "$1"
+		printf "%s: unknown: %s\n" "$(basename $0)" "$1"
 		usage
 		exit 1
 		;;
