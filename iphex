@@ -1,12 +1,14 @@
 #!/bin/sh
+#
+# e-zk (c) wtfpl 2021
 # hex encode a given ip address
 
 INPUT="$1"
-SPLIT=`echo "$INPUT" | sed -e 's/\./\ /g'`
 OUTPUT="0x"
 
-for part in $SPLIT; do
-	HEX=`echo "obase=16; $part" |bc|awk '{printf "%02s", $0}'`
+IFS='.'
+for part in $INPUT; do
+	HEX="$(echo "obase=16; $part" | bc |awk '{printf "%02s", $0}')"
 	OUTPUT=${OUTPUT}${HEX}
 done
 
