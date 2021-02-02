@@ -1,13 +1,14 @@
 #!/bin/sh
+#
+# e-zk (c) wtfpl 2021
 # remove file if it is a symlink
 
 FILE="$1"
 FTYPE="$(file "$FILE")"
 
 case "$FTYPE" in
-	"${FILE}: symbolic link to"*)
-	"${FILE}: broken symbolic link to"*)
-	;;
+	"${FILE}: symbolic link to"*) ;;
+	"${FILE}: broken symbolic link to"*) ;;
 	*)
 		echo "error: $FILE is not a symbolic link"
 		exit 1
