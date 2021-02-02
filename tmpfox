@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# e-zk (c) wtfpl 2021
 # tmpfox - generate a temporary firefox profile
 
 # trap anything; clean up

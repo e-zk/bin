@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# e-zk (c) wtfpl 2021
 # openbsd pkg shortcuts
 
 usage() {

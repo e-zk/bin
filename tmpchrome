@@ -1,4 +1,5 @@
 #!/bin/sh
+#
 # e-zk (c) wtfpl 2021
 # tmpchrome: run chrome from a temporary directory
 #            all data is removed on exit (including downloads)
