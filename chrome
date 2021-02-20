@@ -1,0 +1,7 @@
+#!/bin/sh
+# wrapper for chrome that changes the freaking homedir
+
+unset XDG_CONFIG_HOME
+unset XDG_CACHE_HOME
+export HOME=${HOME}/opt/chrome
+/usr/local/bin/chrome "$@"

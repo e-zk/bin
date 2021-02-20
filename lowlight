@@ -2,5 +2,4 @@
 # set backlight
 
 sct ${1:-2500}
-/home/zzz/bin/solidwall \#141f1f
 /usr/X11R6/bin/xbacklight -set 45

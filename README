@@ -1,138 +1,18 @@
 ~/bin
 =====
 
-various shellscripts and programs
+shellscripts and programs
 
-bar
----
-
-script wrapper that launches lemonbar, sources ~/etc/bar.conf for preconfigured
-options. allows changing options through environment variables:
-
-	# geometry options
-	W	bar width
-	H	bar height
-	X	bar x position
-	Y	bar y position
-	BW	border width
-	
-	# color options
-	BG	background color (hex #[aa]rrggbb)
-	FG	foreground color
-	BC	border color
-	BOT	place bar on bottom (yes/no)
-	
-	# example:
-	(echo "hello!"; sleep 2) | \
-	W=200 H=40 X=20 Y=20 BG=\#000000 FG=\#ffeeee BOT=yes bar
-
-colors
-------
-
-prints pretty colors.
-
-	usage: colors [-vhs] char
-		-v	vertical mode
-		-h	horizontal mode
-		-s	short mode (default)
-		char	char to color & print
-
-compon
-------
-
-toggle compton/picom
-
-gettags
--------
-
-python script to print audio ID3/metadata tags
-
-getxres
--------
-
-gets a value for the given Xresource
-
-hilight + lowlight
-------------------
-
-set wallpaper/brightness (hilight = high brightness, lowlight = low brightness)
-
-iphex
------
-
-convert an IP address into hex form (converts each octet into hex,
-then concatenates). for example:
-
-	iphex 192.168.0.1
-	0xC0A80001
-
-netstop
--------
-
-stop specified network interface (kill dhclient & down the interface).
-
-notif + notified
-----------------
-
-notification client + daemon. `notified` is a daemon that listens on the
-preconfigured FIFO for text to show in a notification. `notify` is essentially
-wrapping echoing text to a FIFO.
-example usage:
-
-	notified &
-	notif "hello!"
-
-power
------
-
-xmenu power menu script (shutdown, reboot, sleep, hiberate).
-
-printpdf
--------
-
-print a pdf file.
-
-rec
----
-
-screen recording via ffmpeg w/ notifications.
-
-shot
-----
-
-screenshot script w/ notifications.
-
-stacks
-------
-
-modular bar launcher. runs a function and pipes it to lemonbar specified
-by the first argument. for example:
-
-	# launches the clock bar
-	stacks clock &
-	# launches wttr module
-	stacks wttr &
-
-tmpfox
-------
-
-temporary firefox script.
-creates a new profile under /tmp, adds options to user.js and  removes profile
-after exit/sigint.
-
-wls
----
-
-list window titles + window IDs.
-depends: wmutils
-
-xeph
-----
-
-Xephyr(1) wrapper.
-
-ytdl + vdl
-----------
-
-scripts to download youtube audio/video (audio = ytdl, video = vdl).
+gettags:            python script to print audio ID3/metadata tags
+getxres:            gets a value for the given Xresource
+hiligh/lowlight:    brightness/temperature setter
+iphex:              convert an IP address into hex form
+netstop:            stop specified network interface (kill dhclient & down interface)
+rec:                screen recording via ffmpeg
+shot:               screenshot script w/ notifications
+tmpfox:             temporary firefox script
+tmpchrome:          temporary chrome script
+wls:                list window titles + window IDs (depends: wmutils)
+xeph:               Xephyr(1) wrapper
+ytdl/vdl:           scripts to download youtube audio/video respectively
 

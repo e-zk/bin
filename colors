@@ -1,5 +1,12 @@
 #!/bin/sh
+#
+# e-zk (c) wtfpl 2021
 # print colors
+# usage: colors [-vhs] char
+#     -v      vertical mode
+#     -h      horizontal mode
+#     -s      short mode (default)
+#     char    char to color & print
 
 def_char="-> " 
 

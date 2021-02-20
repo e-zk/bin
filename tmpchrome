@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# e-zk (c) wtfpl 2021
+# tmpchrome: run chrome from a temporary directory
+#            all data is removed on exit (including downloads)
+# usage: tmpchrome <chrome_args>
+
+# trap everything - cleanup
+trap cleanup 1 2 3 6 15
+
+# setup a fake homedir
+FAKEHOME="$(mktemp -d -p /tmp 'chrome.XXXXXX')"
+
+# this will clean up after exit
+cleanup() {
+	rm -rfv "$FAKEHOME"
+}
+
+# link Xauthority
+ln -s "${HOME}/.Xauthority" "${FAKEHOME}/.Xauthority"
+
+# force fake homedir
+export HOME=${FAKEHOME}
+
+# run chrome
+/usr/local/bin/chrome "$@"
+
+# remove the entire fake home
+cleanup

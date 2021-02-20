@@ -1,0 +1,8 @@
+#!/bin/sh
+
+export DISPLAY=:0
+export QT_X11=NO_MITSHM=1
+export _X11_NO_MIT_SHM=1
+export _MITSHM=0
+
+ssh -fX bowser@100.65.0.2 chromium-browser --use-gl=swiftshader "$@"
