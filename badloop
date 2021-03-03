@@ -1,0 +1,10 @@
+#!/bin/sh
+# execute given command until it returns a 0 exit code (success)
+# (c) e-zk 2021 wtfpl
+# usage: badloop [command [args ...]]
+
+ec=1
+while [ "$ec" -ne 0 ]; do
+        
+        ec=0
+done
