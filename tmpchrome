@@ -19,6 +19,10 @@ cleanup() {
 # link Xauthority
 ln -s "${HOME}/.Xauthority" "${FAKEHOME}/.Xauthority"
 
+# unset XDG dirs as this can interfere with our fake $HOME
+unset XDG_CONFIG_HOME
+unset XDG_CACHE_HOME
+
 # force fake homedir
 export HOME=${FAKEHOME}
 
