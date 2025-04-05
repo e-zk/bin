@@ -1,5 +1,0 @@
-#!/bin/sh
-# set backlight
-
-sct ${1:-2500}
-/usr/X11R6/bin/xbacklight -set 45

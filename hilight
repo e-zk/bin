@@ -1,5 +1,0 @@
-#!/bin/sh
-# set backlight
-
-/usr/X11R6/bin/xbacklight -set 80
-sct 6400

@@ -1,6 +1,6 @@
 #!/bin/sh
 # stop network
-# usage: doas sh bin/netstop <interface?
+# usage: doas sh bin/netstop <interface>
 
 if [ -n "$1" ]; then
 	ifconfig $1 down
