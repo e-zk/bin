@@ -1,8 +1,0 @@
-#!/bin/sh
-# notif: prints notification content to notified FIFO
-# usage: notif "message"
-
-FIFO=${HOME}/var/notified.fifo
-MESSAGE="${@}"
-
-echo -n "${MESSAGE}" > "$FIFO"
