@@ -1,0 +1,5 @@
+#!/bin/sh
+~/src/git/lemonbar-xft/lemonbar -d \
+	-g x40++ -o eDP-1 \
+	-f 'Iosevka:style=Regular:size=12.5' \
+	-B \#000000 -F \#eeeeee

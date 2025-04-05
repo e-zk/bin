@@ -1,0 +1,23 @@
+#!/bin/sh
+
+get_title() {
+	cfw="$(xprop -root '_NET_ACTIVE_WINDOW' | awk '{ print $5 }')"
+	title="$(xprop -id ${cfw} WM_NAME | cut -d= -f2 | tr -d \")"
+	printf '%s' "$title"
+}
+
+get_bat() {
+	lvl="$(apm -l)"
+	ac="$(apm -a)"
+	if [ "$ac" -eq 1 ]; then
+		ac='+'
+	else
+		ac=''
+	fi
+	printf '%s%s%%' "$lvl" "$ac"
+}
+
+while true; do
+	printf ' %s %%{r}%s%%  %s  \n' "$(get_title)" "$(get_bat)" "$(date '+%a %F %H:%M')"
+	sleep 1
+done
