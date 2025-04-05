@@ -1,0 +1,18 @@
+#!/bin/sh
+# usage: binln binary [name]
+
+bin="$1"
+name="${2:-$(basename "$1")}"
+
+if echo "$bin" | grep -q '^/'; then
+	: # noop
+else
+	bin="${PWD}/${bin}"
+fi
+
+if [ ! -f "$bin" ]; then
+	printf 'error: "%s" not a file' "$bin"
+	exit 1
+fi
+
+ln -s "$bin" "${HOME}/bin/ln/${name}"
