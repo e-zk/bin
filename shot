@@ -1,18 +1,18 @@
 #!/bin/sh
-# take a screenshot and append date to filename
-# depends: ImageMagick (import)
+# take a screenshot using imagemagick
+# usage: shot [fname]
+# if no filename is specified defaults to the current 'date-time.png'
 
-DATE="$(date '+%d-%m-%Y-%H%M')"
-if [ -z "$1" ]; then
-	FILE=''
-	EXT='.png'
-	FNAME="${DATE}${EXT}"
-else
-	FILE="${1%%.*}"
-	EXT="${1##${FILE}}"
-	FNAME="${FILE}-${DATE}${EXT}"
+file=''
+ext='.png'
+date="$(date '+%F-%T')"
+
+if [ -n "$1" ]; then
+	file="${1%%.*}-"
+	ext="${1##${file}}"
+	ext="${ext:-'.png'}"
 fi
 
-# wait for a sec, then take the scrot
-sleep 1
-import -window root "${FNAME}"
+fname="${file}${date}${ext}"
+import -window root "$fname"
+echo "$fname"
