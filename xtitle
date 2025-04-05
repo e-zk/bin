@@ -1,0 +1,10 @@
+#!/bin/sh
+
+WID=$1
+
+if [ -z "$WID" ]; then
+	WID="$(xprop -root '_NET_ACTIVE_WINDOW' | awk '{ print $5 }')"
+fi
+
+title="$(xprop -id ${WID} WM_NAME | cut -d= -f2 | tr -d \")"
+printf '%s\n' "$title"
