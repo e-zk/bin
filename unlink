@@ -7,8 +7,8 @@ FILE="$1"
 FTYPE="$(file "$FILE")"
 
 case "$FTYPE" in
-	"${FILE}: symbolic link to"*) ;;
-	"${FILE}: broken symbolic link to"*) ;;
+	"${FILE}: symbolic link"*) ;;
+	"${FILE}: broken symbolic link"*) ;;
 	*)
 		echo "error: $FILE is not a symbolic link"
 		exit 1
