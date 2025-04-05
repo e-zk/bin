@@ -1,5 +1,5 @@
 ~/bin/vid
 =========
-video manipulation scripts
-
-most depend on either ffmpeg or ImageMagick (or both)
+video manipulation scripts.
+most depend on either ffmpeg or ImageMagick (or both).
+quite old, i don't use these often
