@@ -1,18 +1,1 @@
-~/bin
-=====
-
-shellscripts and programs
-
-gettags:            python script to print audio ID3/metadata tags
-getxres:            gets a value for the given Xresource
-hiligh/lowlight:    brightness/temperature setter
-iphex:              convert an IP address into hex form
-netstop:            stop specified network interface (kill dhclient & down interface)
-rec:                screen recording via ffmpeg
-shot:               screenshot script w/ notifications
-tmpfox:             temporary firefox script
-tmpchrome:          temporary chrome script
-wls:                list window titles + window IDs (depends: wmutils)
-xeph:               Xephyr(1) wrapper
-ytdl/vdl:           scripts to download youtube audio/video respectively
-
+~/bin: scripts, etc
