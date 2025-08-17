@@ -1,0 +1,4 @@
+#!/bin/sh
+# monitor: fix monitor position
+xrandr --output HDMI-1 --auto
+xrandr --output HDMI-1 --above eDP-1
