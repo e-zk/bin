@@ -1,4 +1,16 @@
 #!/bin/sh
 # monitor: fix monitor position
-xrandr --output HDMI-1 --auto
-xrandr --output HDMI-1 --above eDP-1
+
+# if we detect hdmi, then do stuff
+if [ -z "$(xrandr | grep HDMI-1 | grep disconnected)" ]; then
+	xrandr --output HDMI-1 --auto
+	xrandr --output HDMI-1 --above eDP-1
+	xrandr --output HDMI-1 --primary
+fi
+
+# if bar running, then restart it
+bar=$(pgrep lemonbar)
+if [ -n "$bar" ]; then
+	kill $bar
+	(status | bar) &
+fi
