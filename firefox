@@ -1,4 +1,3 @@
 #!/bin/sh
 # wrapper for firefox-esr that changes the freaking homedir
-
-MOZ_ACCELERATED=1 HOME=${HOME}/opt/firefox firefox-esr --new-instance --no-remote "$@"
+/usr/local/bin/firefox --new-instance --no-remote "$@"
